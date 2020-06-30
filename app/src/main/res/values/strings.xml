@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">sub1</string>
+    <string name="hint">Enter you handle</string>
+    <string name="submit_button">Add User</string>
+</resources>
