@@ -3,8 +3,14 @@ package com.example.sub1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -17,9 +23,14 @@ public class DataActivity extends AppCompatActivity {
     public static final String BASE_URL = "https://codeforces.com/api/";
     private Retrofit retrofit;
     private String handle;
-
-    private TextView textView;
+    private TextView handleName;
     private com.example.sub1.ApiInterface apiInterface;
+
+    // for graph
+    private LineGraphSeries<DataPoint> series1;
+    private int x, y;
+    private GraphView graph;
+    //for graph
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +43,13 @@ public class DataActivity extends AppCompatActivity {
             handle = bundle.getString("tag");
         }
 
-        textView = findViewById(R.id.textViewId);
+        handleName = findViewById(R.id.handleNameId);
+        handleName.setText(handle);
+
+        // for graph
+        graph = findViewById(R.id.graph);
+        series1 = new LineGraphSeries<>();
+        // for graph
 
         // API client
         retrofit = new Retrofit.Builder()
@@ -46,27 +63,34 @@ public class DataActivity extends AppCompatActivity {
     }
 
     private void getStatus() {
-        Call<com.example.sub1.UserStatus> call = apiInterface.getUserStatus(handle, 1, 100);
+        Call<com.example.sub1.UserStatus> call = apiInterface.getUserStatus(handle, 1, 10000);
 
         call.enqueue(new Callback<com.example.sub1.UserStatus>() {
             @Override
             public void onResponse(Call<com.example.sub1.UserStatus> call, Response<com.example.sub1.UserStatus> response) {
-                if(!response.isSuccessful()) {
-                    textView.setText("code: " + response.code());
-                    return;
+
+                List<Result> results = response.body().getResults();
+                Collections.reverse(results);
+                x = 1;
+
+                int count = 0;
+                for (Result result : results) {
+                    if (result.getVerdict().equals("OK")) count++;
                 }
-                List<com.example.sub1.Result> results = response.body().getResults();
 
                 for (com.example.sub1.Result result : results) {
-                    String content = "";
-                    content += "Name: " + result.getProblem().getName() + "\n";
-                    textView.append(content);
+                    if (result.getVerdict().equals("OK")) {
+                        y = result.getProblem().getRating();
+                        series1.appendData(new DataPoint(x, y), true, count);
+                        x++;
+                    }
                 }
+                graph.addSeries(series1);
             }
 
             @Override
             public void onFailure(Call<com.example.sub1.UserStatus> call, Throwable t) {
-                textView.setText(t.getMessage());
+                //textView.setText(t.getMessage());
             }
         });
     }
