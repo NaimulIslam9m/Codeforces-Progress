@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,8 +31,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(MainActivity.this, DataActivity.class);
-        intent.putExtra("tag", editTextHandle.getText().toString());
-        startActivity(intent);
+        String text = editTextHandle.getText().toString();
+
+//            if there is no handle in input then show a message with a toast
+        if (!text.equals("")) {
+            Intent intent = new Intent(MainActivity.this, DataActivity.class);
+            intent.putExtra("tag", text);
+            startActivity(intent);
+        } else {
+            Toast.makeText(MainActivity.this, "Please input a handle", Toast.LENGTH_SHORT).show();
+        }
     }
 }
