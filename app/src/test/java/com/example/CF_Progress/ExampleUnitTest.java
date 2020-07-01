@@ -1,4 +1,4 @@
-package com.example.sub1;
+package com.example.CF_Progress;
 
 import org.junit.Test;
 
