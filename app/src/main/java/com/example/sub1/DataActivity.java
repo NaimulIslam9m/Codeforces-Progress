@@ -3,7 +3,6 @@ package com.example.sub1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
@@ -20,23 +19,27 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DataActivity extends AppCompatActivity {
-    public static final String BASE_URL = "https://codeforces.com/api/";
+
+    private static final String BASE_URL = "https://codeforces.com/api/";
+    private static final int COUNT = 10000; // number of submissions to get
+    private static final int FROM = 1; // 1-based index of the first submission
     private Retrofit retrofit;
     private String handle;
     private TextView handleName;
-    private com.example.sub1.ApiInterface apiInterface;
+    private ApiInterface apiInterface;
 
-    // for graph
-    private LineGraphSeries<DataPoint> series1;
-    private int x, y;
+    //    for graph
+    private LineGraphSeries<DataPoint> plot1;
     private GraphView graph;
-    //for graph
+    private int x, y;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
 
+//        for passing data from one layout to another
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
@@ -48,8 +51,7 @@ public class DataActivity extends AppCompatActivity {
 
         // for graph
         graph = findViewById(R.id.graph);
-        series1 = new LineGraphSeries<>();
-        // for graph
+        plot1 = new LineGraphSeries<>();
 
         // API client
         retrofit = new Retrofit.Builder()
@@ -57,39 +59,41 @@ public class DataActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        apiInterface = retrofit.create(com.example.sub1.ApiInterface.class);
+        apiInterface = retrofit.create(ApiInterface.class);
 
         getStatus();
     }
 
     private void getStatus() {
-        Call<com.example.sub1.UserStatus> call = apiInterface.getUserStatus(handle, 1, 10000);
+        Call<UserStatus> call = apiInterface.getUserStatus(handle, FROM, COUNT);
 
-        call.enqueue(new Callback<com.example.sub1.UserStatus>() {
+        call.enqueue(new Callback<UserStatus>() {
             @Override
-            public void onResponse(Call<com.example.sub1.UserStatus> call, Response<com.example.sub1.UserStatus> response) {
+            public void onResponse(Call<UserStatus> call, Response<UserStatus> response) {
 
                 List<Result> results = response.body().getResults();
-                Collections.reverse(results);
-                x = 1;
 
+//                to get oldest sumbission first
+                Collections.reverse(results);
+
+                x = 1;
                 int count = 0;
                 for (Result result : results) {
                     if (result.getVerdict().equals("OK")) count++;
                 }
 
-                for (com.example.sub1.Result result : results) {
+                for (Result result : results) {
                     if (result.getVerdict().equals("OK")) {
                         y = result.getProblem().getRating();
-                        series1.appendData(new DataPoint(x, y), true, count);
+                        plot1.appendData(new DataPoint(x, y), true, count);
                         x++;
                     }
                 }
-                graph.addSeries(series1);
+                graph.addSeries(plot1);
             }
 
             @Override
-            public void onFailure(Call<com.example.sub1.UserStatus> call, Throwable t) {
+            public void onFailure(Call<UserStatus> call, Throwable t) {
                 //textView.setText(t.getMessage());
             }
         });

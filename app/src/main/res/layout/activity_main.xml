@@ -12,19 +12,19 @@
         android:id="@+id/handleId"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:textSize="23sp"
-        android:hint="@string/hint"
         android:gravity="center"
+        android:hint="@string/hint"
         android:inputType="text"
-        android:textCursorDrawable="@null"/>
+        android:textCursorDrawable="@null"
+        android:textSize="23sp" />
 
     <Button
         android:id="@+id/submitButtonId"
+        style="@android:style/Widget.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/submit_button"
-        style="@android:style/Widget.Button"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:text="@string/submit_button" />
 
 
 </LinearLayout>

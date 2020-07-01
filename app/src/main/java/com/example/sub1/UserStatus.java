@@ -14,10 +14,16 @@ public class UserStatus {
     @Expose
     private List<Result> results = null;
 
+    /*
+     * status is either "OK" or "FAILED".
+     */
     public String getStatus() {
         return status;
     }
 
+    /*
+     * Returns a "list of Submission objects", sorted in decreasing order of submission id.
+     */
     public List<Result> getResults() {
         return results;
     }

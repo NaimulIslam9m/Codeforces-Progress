@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText editText;
+    //    For taking input handle from the user
+    EditText editTextHandle;
+
+    //    For submitting the input handle
     Button submitButton;
 
     @Override
@@ -19,15 +22,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         submitButton = findViewById(R.id.submitButtonId);
-        editText = findViewById(R.id.handleId);
+        editTextHandle = findViewById(R.id.handleId);
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DataActivity.class);
-                intent.putExtra("tag", editText.getText().toString());
-                startActivity(intent);
-            }
-        });
+        submitButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(MainActivity.this, DataActivity.class);
+        intent.putExtra("tag", editTextHandle.getText().toString());
+        startActivity(intent);
     }
 }
