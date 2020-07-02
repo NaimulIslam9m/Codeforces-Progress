@@ -5,11 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.PointsGraphSeries;
+import com.jjoe64.graphview.series.Series;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,7 +103,7 @@ public class DataActivity extends AppCompatActivity {
                 //        set some properties
                 scatterPlot.setShape(PointsGraphSeries.Shape.POINT);
                 scatterPlot.setColor(Color.BLACK);
-                scatterPlot.setSize(10f);
+                scatterPlot.setSize(5f);
 
                 // set scrollable and scalable
                 graph.getViewport().setScalable(true);
@@ -108,17 +113,41 @@ public class DataActivity extends AppCompatActivity {
 
                 // set manual y bounds
                 graph.getViewport().setYAxisBoundsManual(true);
-                graph.getViewport().setMaxY(count+10);
+                graph.getViewport().setMaxY(count + 10);
                 graph.getViewport().setMinY(500);
 
                 // set manual x bounds
                 graph.getViewport().setXAxisBoundsManual(true);
-                graph.getViewport().setMaxX(count+10);
+                graph.getViewport().setMaxX(count + 10);
                 graph.getViewport().setMinX(0);
 
                 graph.addSeries(scatterPlot);
 
                 graph.addSeries(scatterPlot);
+                /*
+                 * custom lable
+                 */
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (isValueX) {
+                            // show normal x values
+                            return super.formatLabel(value, isValueX);
+                        } else {
+                            // show currency of y values
+                            return "." + super.formatLabel(value, isValueX);
+                        }
+                    }
+                });
+                /*
+                 * Tap listener on data points
+                 */
+                scatterPlot.setOnDataPointTapListener(new OnDataPointTapListener() {
+                    @Override
+                    public void onTap(Series series, DataPointInterface dataPoint) {
+                        String message = "X: " + dataPoint.getX() + "\nY: " + dataPoint.getY();
+                        Toast.makeText(DataActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
