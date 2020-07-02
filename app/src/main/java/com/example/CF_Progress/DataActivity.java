@@ -2,13 +2,16 @@ package com.example.CF_Progress;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,8 +31,9 @@ public class DataActivity extends AppCompatActivity {
     private TextView handleName;
     private ApiInterface apiInterface;
 
+
     //    for graph
-    private LineGraphSeries<DataPoint> plot1;
+    private PointsGraphSeries<DataPoint> scatterPlot;
     private GraphView graph;
     private int x, y;
 
@@ -51,7 +55,7 @@ public class DataActivity extends AppCompatActivity {
 
         // for graph
         graph = findViewById(R.id.graph);
-        plot1 = new LineGraphSeries<>();
+        scatterPlot = new PointsGraphSeries<>();
 
         // API client
         retrofit = new Retrofit.Builder()
@@ -85,11 +89,36 @@ public class DataActivity extends AppCompatActivity {
                 for (Result result : results) {
                     if (result.getVerdict().equals("OK")) {
                         y = result.getProblem().getRating();
-                        plot1.appendData(new DataPoint(x, y), true, count);
+                        if (y < 800) continue;
+                        scatterPlot.appendData(new DataPoint(x, y), true, count);
                         x++;
                     }
                 }
-                graph.addSeries(plot1);
+
+                //        set some properties
+                scatterPlot.setShape(PointsGraphSeries.Shape.POINT);
+                scatterPlot.setColor(Color.BLACK);
+                scatterPlot.setSize(10f);
+
+                // set scrollable and scalable
+                graph.getViewport().setScalable(true);
+                graph.getViewport().setScalableY(true);
+                graph.getViewport().setScrollable(true);
+                graph.getViewport().setScrollableY(true);
+
+                // set manual y bounds
+                graph.getViewport().setYAxisBoundsManual(true);
+                graph.getViewport().setMaxY(count+10);
+                graph.getViewport().setMinY(500);
+
+                // set manual x bounds
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMaxX(count+10);
+                graph.getViewport().setMinX(0);
+
+                graph.addSeries(scatterPlot);
+
+                graph.addSeries(scatterPlot);
             }
 
             @Override
