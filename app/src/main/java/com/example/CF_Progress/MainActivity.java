@@ -11,11 +11,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //    For taking input handle from the user
-    EditText editTextHandle;
-
-    //    For submitting the input handle
-    Button submitButton;
+    EditText editTextHandle; // For taking input handle from the user
+    Button submitButton; // For submitting the input handle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         String text = editTextHandle.getText().toString();
 
-//            if there is no handle in input then show a message with a toast
+        // if there is no handle in input then show a message with a toast
         if (!text.equals("")) {
             Intent intent = new Intent(MainActivity.this, DataActivity.class);
             intent.putExtra("tag", text);

@@ -14,6 +14,10 @@ public class UserStatus {
     @Expose
     private List<Result> results = null;
 
+    @SerializedName("comment")
+    @Expose
+    private String comment = "";
+
     /*
      * status is either "OK" or "FAILED".
      */
@@ -26,5 +30,13 @@ public class UserStatus {
      */
     public List<Result> getResults() {
         return results;
+    }
+
+    /*
+     *If status is "FAILED" then comment contains the reason why the request failed.
+     * If status is "OK", then there is no comment.
+     */
+    public String getComment() {
+        return comment;
     }
 }
