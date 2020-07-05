@@ -16,7 +16,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,30 +45,40 @@ public class DataActivity extends AppCompatActivity {
     private TextView handleName;
     private ApiInterface apiInterface;
 
-    private int x;
+    private int x = 0;
     private int y;
 
+
+
     private ScatterChart scatterChart;
-    private ArrayList<Entry> entries = new ArrayList<>();
-    private ScatterDataSet scatterDataSet;
+    private ArrayList<ArrayList<Entry>> entries = new ArrayList<>(27);
+    private ArrayList<IScatterDataSet> scatterDataSets = new ArrayList<>();
     private ScatterData scatterData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
-
+Log.d(TAG, "1");
 
         // for passing data from one layout to another
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             handle = bundle.getString("tag");
         }
+Log.d(TAG, "2");
         handleName = findViewById(R.id.handleNameId);
         handleName.setText(handle);
-
+Log.d(TAG, "3");
         scatterChart = findViewById(R.id.scatterChart);
+Log.d(TAG, "4");
+        retrofitFun();
+        init();
+        Log.d(TAG, "HOw are you?");
+        getStatus();
+    }
 
+    private void retrofitFun() {
         // API client
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -76,13 +86,17 @@ public class DataActivity extends AppCompatActivity {
                 .build();
 
         apiInterface = retrofit.create(ApiInterface.class);
+    }
 
-        getStatus();
+    private void init() {
+        for (int i = 0; i < 27; i++) {
+            entries.add(new ArrayList());
+        }
     }
 
     private void getStatus() {
         Call<UserStatus> call = apiInterface.getUserStatus(handle, FROM, COUNT);
-
+        Log.d(TAG, "Hello");
         call.enqueue(new Callback<UserStatus>() {
 
             @Override
@@ -93,29 +107,40 @@ public class DataActivity extends AppCompatActivity {
                 // to get oldest to newest sumbission
                 Collections.reverse(results);
 
-                x = 0;
                 for (Result result : results) {
                     if (result.getVerdict().equals("OK")) {
                         y = result.getProblem().getRating(); // rating
                         if (y < 800) continue;
-                        entries.add(new Entry(x, y));
+                        entries.get(y/100 - 8).add(new Entry(x, y));
                         x++;
                     }
                 }
 
 
+//                scatterDataSet = new ScatterDataSet(entries.get(0), "data 1");
+//                scatterDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+//                scatterData = new ScatterData(scatterDataSet);
+//                scatterChart.setData(scatterData);
 
-                scatterDataSet = new ScatterDataSet(entries, "data 1");
-                scatterDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                scatterData = new ScatterData(scatterDataSet);
+                int[] ratingArray = getResources().getIntArray(R.array.cf_lvl);
+
+                Log.d(TAG, "Hi");
+                for (int i = 0; i < 27; i++) {
+                    if (entries.get(i).size() > 0) {
+                        ScatterDataSet sds = new ScatterDataSet(entries.get(i), "data " + ((i + 8) * 100));
+                        sds.setColor(ratingArray[i]);
+                        scatterDataSets.add(sds);
+                    }
+                }
+                scatterData = new ScatterData(scatterDataSets);
                 scatterChart.setData(scatterData);
+
 
 
                 //axis
                 scatterChart.getAxisRight().setEnabled(false);
                 XAxis xAxis = scatterChart.getXAxis();
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
 
 
                 // set scrollable and scalable
@@ -127,25 +152,13 @@ public class DataActivity extends AppCompatActivity {
 
 
                 Legend l = scatterChart.getLegend();
-                l.setEnabled(true);
-                l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-                l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-                l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-                l.setDrawInside(true);
-                l.setYOffset(20f);
-                l.setXOffset(0f);
-                l.setYEntrySpace(0f);
-                l.setTextSize(8f);
-//                l.setTextColor();
-//                l.setForm(l.LegendForm.SQUARE);
-//                l.setFormSize();
-//                l.setXEntrySpace();
-//                l.setFormToTextSpace();
+                setLegendVal(l, -30, 10);
+
 
                 xAxis.setGranularity(1f);
                 xAxis.setGranularityEnabled(true);
                 xAxis.setDrawGridLines(true);
-                xAxis.setAxisMaximum(x+1);
+                xAxis.setAxisMaximum(x + 1);
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
                 YAxis yAxis = scatterChart.getAxisLeft();
@@ -159,6 +172,24 @@ public class DataActivity extends AppCompatActivity {
                 Log.d(TAG, "onFailure: " + t.getMessage());
             }
         });
+    }
+
+    private void setLegendVal(Legend l, float x, float y) {
+        l.setEnabled(true);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+
+        l.setDrawInside(true);
+        l.setYOffset(y);
+        l.setXOffset(x);
+
+        l.setXEntrySpace(-30f);
+        l.setTextSize(4f);
+        l.setForm(Legend.LegendForm.CIRCLE);
+        l.setFormSize(4f);
+        l.setXEntrySpace(-10);
+        l.setFormToTextSpace(1);
     }
 
     private void toastMessage(String message) {
