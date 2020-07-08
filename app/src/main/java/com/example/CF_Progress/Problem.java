@@ -3,6 +3,8 @@ package com.example.CF_Progress;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Problem {
     @SerializedName("contestId")
     @Expose
@@ -26,7 +28,11 @@ public class Problem {
 
     @SerializedName("rating")
     @Expose
-    private int rating;
+    private int rating = -1;
+
+    @SerializedName("tags")
+    @Expose
+    private List<String> tags;
 
     /*
      * Same field is present on previous class
@@ -77,5 +83,9 @@ public class Problem {
      */
     public int getRating() {
         return rating;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 }

@@ -1,16 +1,16 @@
 package com.example.CF_Progress;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.ScatterChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -43,15 +43,13 @@ public class DataActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private String handle;
     private TextView handleName;
-    private ApiInterface apiInterface;
+    private ApiInterfaceGetStatus apiInterfaceGS;
 
     private int x = 0;
     private int y;
 
-
-
     private ScatterChart scatterChart;
-    private ArrayList<ArrayList<Entry>> entries = new ArrayList<>(27);
+    private ArrayList<ArrayList<Entry>> entries = new ArrayList<>();
     private ArrayList<IScatterDataSet> scatterDataSets = new ArrayList<>();
     private ScatterData scatterData;
 
@@ -59,22 +57,18 @@ public class DataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
-Log.d(TAG, "1");
 
         // for passing data from one layout to another
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             handle = bundle.getString("tag");
         }
-Log.d(TAG, "2");
         handleName = findViewById(R.id.handleNameId);
         handleName.setText(handle);
-Log.d(TAG, "3");
         scatterChart = findViewById(R.id.scatterChart);
-Log.d(TAG, "4");
+
         retrofitFun();
         init();
-        Log.d(TAG, "HOw are you?");
         getStatus();
     }
 
@@ -85,20 +79,20 @@ Log.d(TAG, "4");
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        apiInterface = retrofit.create(ApiInterface.class);
+        apiInterfaceGS = retrofit.create(ApiInterfaceGetStatus.class);
     }
 
     private void init() {
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i <= 27; i++) {
             entries.add(new ArrayList());
         }
     }
 
     private void getStatus() {
-        Call<UserStatus> call = apiInterface.getUserStatus(handle, FROM, COUNT);
-        Log.d(TAG, "Hello");
+        Call<UserStatus> call = apiInterfaceGS.getUserStatus(handle, FROM, COUNT);
         call.enqueue(new Callback<UserStatus>() {
 
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onResponse(Call<UserStatus> call, Response<UserStatus> response) {
 
@@ -110,38 +104,27 @@ Log.d(TAG, "4");
                 for (Result result : results) {
                     if (result.getVerdict().equals("OK")) {
                         y = result.getProblem().getRating(); // rating
-                        if (y < 800) continue;
-                        entries.get(y/100 - 8).add(new Entry(x, y));
-                        x++;
+                        if (y >= 800 && y <= 3500) {
+                            entries.get(y / 100 - 8).add(new Entry(x, y));
+                            x++;
+                        }
                     }
                 }
-
-
-//                scatterDataSet = new ScatterDataSet(entries.get(0), "data 1");
-//                scatterDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-//                scatterData = new ScatterData(scatterDataSet);
-//                scatterChart.setData(scatterData);
 
                 int[] ratingArray = getResources().getIntArray(R.array.cf_lvl);
 
-                Log.d(TAG, "Hi");
                 for (int i = 0; i < 27; i++) {
                     if (entries.get(i).size() > 0) {
-                        ScatterDataSet sds = new ScatterDataSet(entries.get(i), "data " + ((i + 8) * 100));
+                        ScatterDataSet sds = new ScatterDataSet(entries.get(i), "");
                         sds.setColor(ratingArray[i]);
+                        sds.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+                        sds.setScatterShapeSize(12f);
                         scatterDataSets.add(sds);
                     }
                 }
+
                 scatterData = new ScatterData(scatterDataSets);
                 scatterChart.setData(scatterData);
-
-
-
-                //axis
-                scatterChart.getAxisRight().setEnabled(false);
-                XAxis xAxis = scatterChart.getXAxis();
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
 
                 // set scrollable and scalable
                 scatterChart.setDragEnabled(true);
@@ -150,21 +133,10 @@ Log.d(TAG, "4");
                 scatterChart.animateXY(0, 5000, Easing.EaseOutBounce, Easing.EaseOutBounce);
                 scatterChart.invalidate();
 
+                scatterChart.getDescription().setEnabled(false);
+                scatterChart.getLegend().setEnabled(false);
 
-                Legend l = scatterChart.getLegend();
-                setLegendVal(l, -30, 10);
-
-
-                xAxis.setGranularity(1f);
-                xAxis.setGranularityEnabled(true);
-                xAxis.setDrawGridLines(true);
-                xAxis.setAxisMaximum(x + 1);
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-                YAxis yAxis = scatterChart.getAxisLeft();
-                yAxis.setDrawGridLines(true);
-                yAxis.setSpaceTop(35f);
-                yAxis.setAxisMinimum(750f);
+                axisProperties();
             }
 
             @Override
@@ -174,22 +146,22 @@ Log.d(TAG, "4");
         });
     }
 
-    private void setLegendVal(Legend l, float x, float y) {
-        l.setEnabled(true);
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
 
-        l.setDrawInside(true);
-        l.setYOffset(y);
-        l.setXOffset(x);
+    private void axisProperties() {
+        scatterChart.getAxisRight().setEnabled(false);
+        XAxis xAxis = scatterChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        l.setXEntrySpace(-30f);
-        l.setTextSize(4f);
-        l.setForm(Legend.LegendForm.CIRCLE);
-        l.setFormSize(4f);
-        l.setXEntrySpace(-10);
-        l.setFormToTextSpace(1);
+        xAxis.setGranularity(1f);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setDrawGridLines(true);
+        xAxis.setAxisMaximum(x + 10);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        YAxis yAxis = scatterChart.getAxisLeft();
+        yAxis.setDrawGridLines(true);
+        yAxis.setSpaceTop(0);
+        yAxis.setAxisMinimum(750f);
     }
 
     private void toastMessage(String message) {

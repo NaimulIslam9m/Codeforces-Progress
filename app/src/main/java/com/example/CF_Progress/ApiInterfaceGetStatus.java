@@ -4,7 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface ApiInterface {
+public interface ApiInterfaceGetStatus {
     /*
      * retrofit will use relative URL to fetch data and
      * it will add body to the following abstract method
