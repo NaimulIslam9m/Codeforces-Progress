@@ -3,6 +3,7 @@
     package="com.example.CF_Progress">
     <!-- to add internet connection with the app -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_TIME_ZONE"/>
 
     <application
         android:allowBackup="true"

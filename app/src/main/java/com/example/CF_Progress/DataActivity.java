@@ -27,8 +27,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +47,7 @@ public class DataActivity extends AppCompatActivity {
 
     private static final String TAG = "DataActivityFF";
     private static final String BASE_URL = "https://codeforces.com/api/";
-    private static final int COUNT = 10000; // Maximum number of submissions fetch from codeforces
+    private static final int COUNT = 100000; // Maximum number of submissions fetch from codeforces
     private static final int FROM = 1; // 1-based index of the first submission
 
     private Retrofit retrofit;
@@ -65,8 +67,8 @@ public class DataActivity extends AppCompatActivity {
     private LinearLayout LLProgressBar, LLData;
 
     private ImageView avatar;
-    private TextView fullName, currentRating, countryName, organizationName, rank,
-                     contribution, maxRating, maxRank, friendOfCount, email, registered;
+    private TextView fullName, rating, countryName, organizationName, rank,
+                     contribution, maxRank, friendOfCount, email, registered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +84,16 @@ public class DataActivity extends AppCompatActivity {
             handle = bundle.getString("tag");
         }
         handleName = findViewById(R.id.handleId);
-        handleName.setText("Handle: " + handle);
+        handleName.setText(handle);
+
         scatterChart = findViewById(R.id.scatterChart);
         avatar = findViewById(R.id.avatarId);
         fullName = findViewById(R.id.fullNameId);
-        currentRating = findViewById(R.id.ratingId);
+        rating = findViewById(R.id.ratingId);
         countryName = findViewById(R.id.countryId);
         organizationName = findViewById(R.id.organizationId);
         rank = findViewById(R.id.rankId);
         contribution = findViewById(R.id.contributionId);
-        maxRating = findViewById(R.id.maxRatingId);
         maxRank = findViewById(R.id.maxRankId);
         friendOfCount = findViewById(R.id.friendOfCountId);
         email = findViewById(R.id.emailId);
@@ -124,12 +126,16 @@ public class DataActivity extends AppCompatActivity {
 
                     // to get oldest to newest sumbission
                     Collections.reverse(results);
+                    HashSet<String> hs = new HashSet<>();
 
                     for (Result result : results) {
                         if (result.getVerdict().equals("OK")) {
                             y = result.getProblem().getRating(); // rating
-                            if (y >= 800 && y <= 3500) {
+                            String problemName = result.getProblem().getName();
+
+                            if (y >= 800 && y <= 3500 && !hs.contains(problemName)) {
                                 entries.get(y / 100 - 8).add(new Entry(x, y));
+                                hs.add(problemName);
                                 x++;
                             }
                         }
@@ -137,12 +143,12 @@ public class DataActivity extends AppCompatActivity {
 
                     int[] ratingArray = getResources().getIntArray(R.array.cf_lvl);
 
-                    for (int i = 0; i < 27; i++) {
+                    for (int i = 0; i < 28; i++) {
                         if (entries.get(i).size() > 0) {
                             ScatterDataSet sds = new ScatterDataSet(entries.get(i), "");
                             sds.setColor(ratingArray[i]);
                             sds.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-                            sds.setScatterShapeSize(12f);
+                            sds.setScatterShapeSize(11f);
                             scatterDataSets.add(sds);
                         }
                     }
@@ -195,13 +201,12 @@ public class DataActivity extends AppCompatActivity {
 
                     String mImageAvatar = "https:" + result.getAvatar();
                     String mFullName = "Name: " + result.getFirstName() + " " + result.getLastName();
-                    String mCurrentRating = "Rating: " + result.getRating();
+                    String mRating = result.getRating() + "/" + result.getMaxRating();
                     String mCountryName = "Country: " + result.getCountry();
                     String mOrganizationName = "Organization: " + result.getOrganization();
                     String mRank = "Rank: " + result.getRank();
                     String mContribution = "Contribution: " + result.getContribution();
-                    String mMaxRating = "MaxRating: " + result.getMaxRating();
-                    String mMaxRank = "MaxRank: " + result.getMaxRank();
+                    String mMaxRank = result.getMaxRank();
                     String mFriendOfCount = "Friend of: " + result.getFriendOfCount();
                     String mEmail = "Email: " + result.getEmail();
                     Date d = new Date(result.getRegistrationTimeSeconds() * 1000L);
@@ -210,17 +215,124 @@ public class DataActivity extends AppCompatActivity {
 
                     Picasso.get().load(mImageAvatar).into(avatar);
 
-                    fullName.setText(mFullName);
-                    currentRating.setText(mCurrentRating);
-                    countryName.setText(mCountryName);
-                    organizationName.setText(mOrganizationName);
-                    rank.setText(mRank);
+                    if (!mFullName.equals("Name: null null")) {
+                        fullName.setText(mFullName);
+                    } else {
+                        fullName.setVisibility(View.GONE);
+                    }
+
+                    if (!mCountryName.equals("Country: null")) {
+                        countryName.setText(mCountryName);
+                    } else {
+                        countryName.setVisibility(View.GONE);
+                    }
+
+                    if (!mOrganizationName.equals("Organization: null")) {
+                        organizationName.setText(mOrganizationName);
+                    } else {
+                        organizationName.setVisibility(View.GONE);
+                    }
+
+                    if (!mRank.equals("Rank: null")) {
+                        rank.setText(mRank);
+                    } else {
+                        rank.setVisibility(View.GONE);
+                    }
+
+                    if (!mEmail.equals("Email: null")) {
+                        email.setText(mEmail);
+                    } else {
+                        email.setVisibility(View.GONE);
+                    }
+
+                    rating.setText(mRating);
                     contribution.setText(mContribution);
-                    maxRating.setText(mMaxRating);
                     maxRank.setText(mMaxRank);
                     friendOfCount.setText(mFriendOfCount);
-                    email.setText(mEmail);
                     registered.setText(mRegistered);
+
+                    for (int i = 0; i < 2; i++) {
+
+                        int ratingNumber = 0;
+                        if (i == 0) {
+                            ratingNumber = result.getRating(); // current rating
+                        } else if (i == 1) {
+                            ratingNumber = result.getMaxRating(); // max rating
+                        }
+
+                        if (ratingNumber == 0) {
+                            // color is black
+                        } else if (ratingNumber < 1200) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_800, getResources().newTheme()));
+                            } else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_800, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 1400) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_1300, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_1300, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 1600) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_1500, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_1500, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 1900) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_1700, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_1700, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 2100) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_2000, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_2000, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 2300) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_2200, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_2200, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 2400) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_2300, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_2300, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 2600) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_2500, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_2500, getResources().newTheme()));
+                            }
+                        } else if (ratingNumber < 3000) {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_2800, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_2800, getResources().newTheme()));
+                            }
+                        } else {
+                            if (i == 0) {
+                                handleName.setTextColor(getResources().getColor(R.color.lvl_3000, getResources().newTheme()));
+                            }
+                            else if (i == 1) {
+                                maxRank.setTextColor(getResources().getColor(R.color.lvl_3000, getResources().newTheme()));
+                            }
+                        }
+                    }
                 }
 
                 @Override
@@ -258,7 +370,7 @@ public class DataActivity extends AppCompatActivity {
     }
 
     private void init() {
-        for (int i = 0; i <= 27; i++) {
+        for (int i = 0; i < 28; i++) {
             entries.add(new ArrayList());
         }
     }
