@@ -38,7 +38,7 @@ public class SplashScreen extends AppCompatActivity {
 
         for (int progress = 0; progress <= 100; progress++) {
             try {
-                Thread.sleep(30);
+                Thread.sleep(20);
                 progressBar.setProgress(progress);
             } catch (InterruptedException e) {
                 e.printStackTrace();

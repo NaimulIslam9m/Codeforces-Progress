@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.SimpleTimeZone;
@@ -68,7 +70,19 @@ public class DataActivity extends AppCompatActivity {
 
     private ImageView avatar;
     private TextView fullName, rating, countryName, organizationName, rank,
-                     contribution, maxRank, friendOfCount, email, registered;
+                     contribution, maxRank, friendOfCount, email, registered,
+                     scoreView;
+
+    long currentValue = 0;
+    boolean firsttime = true;
+    long prevSubmissionTime = 0;
+    long diff = 0; // difference of days between consecutive submissions
+    double penalty = 0;
+    long userScore;
+
+    private ProgressBar score;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +112,8 @@ public class DataActivity extends AppCompatActivity {
         friendOfCount = findViewById(R.id.friendOfCountId);
         email = findViewById(R.id.emailId);
         registered = findViewById(R.id.registeredId);
+        score = findViewById(R.id.scoreId);
+        scoreView = findViewById(R.id.scoreViewId);
 
         retrofitFun();
         init();
@@ -137,9 +153,32 @@ public class DataActivity extends AppCompatActivity {
                                 entries.get(y / 100 - 8).add(new Entry(x, y));
                                 hs.add(problemName);
                                 x++;
+
+                                if (firsttime) {
+                                    prevSubmissionTime = result.getCreationTimeSeconds();
+                                    firsttime = false;
+                                } else {
+                                    diff = (result.getCreationTimeSeconds() - prevSubmissionTime)/86400;
+                                    prevSubmissionTime = result.getCreationTimeSeconds();
+                                }
+
+                                if (y < 1200) penalty = 0.20;
+                                else if (y < 1400) penalty = 0.17;
+                                else if (y < 1600) penalty = 0.14;
+                                else if (y < 1900) penalty = 0.11;
+                                else if (y < 2100) penalty = 0.08;
+                                else if (y < 2300) penalty = 0.05;
+                                else if (y < 2400) penalty = 0.04;
+                                else if (y < 2600) penalty = 0.03;
+                                else if (y < 3000) penalty = 0.02;
+                                else if (y <= 3500) penalty = 0.01;
+
+                                currentValue += (y - y*penalty*diff);
                             }
                         }
                     }
+                    userScore = currentValue/35/(x-1);
+                    scoreView.setText(String.valueOf(userScore) + "/100");
 
                     int[] ratingArray = getResources().getIntArray(R.array.cf_lvl);
 
@@ -227,7 +266,7 @@ public class DataActivity extends AppCompatActivity {
                         countryName.setVisibility(View.GONE);
                     }
 
-                    if (!mOrganizationName.equals("Organization: null")) {
+                    if (!mOrganizationName.equals("Organization: ") && !mOrganizationName.equals("Organization: null")) {
                         organizationName.setText(mOrganizationName);
                     } else {
                         organizationName.setVisibility(View.GONE);
@@ -354,6 +393,24 @@ public class DataActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean aBoolean) {
             LLProgressBar.setVisibility(View.GONE);
             LLData.setVisibility(View.VISIBLE);
+
+            final Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+
+                    for (int i = 0; i <= userScore; i++) {
+                        try {
+                            Thread.sleep(40);
+                            score.setProgress(i);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            thread.start();
+
             super.onPostExecute(aBoolean);
         }
     }
@@ -374,4 +431,5 @@ public class DataActivity extends AppCompatActivity {
             entries.add(new ArrayList());
         }
     }
+
 }
