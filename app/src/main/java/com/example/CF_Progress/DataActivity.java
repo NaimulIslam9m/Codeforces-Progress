@@ -21,7 +21,9 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -71,7 +73,7 @@ public class DataActivity extends AppCompatActivity {
     private ImageView avatar;
     private TextView fullName, rating, countryName, organizationName, rank,
                      contribution, maxRank, friendOfCount, email, registered,
-                     scoreView;
+                     scoreView, lastAccepted;
 
     long currentValue = 0;
     boolean firsttime = true;
@@ -79,6 +81,7 @@ public class DataActivity extends AppCompatActivity {
     long diff = 0; // difference of days between consecutive submissions
     double penalty = 0;
     long userScore;
+    String lastACProblem = null;
 
     private ProgressBar score;
 
@@ -114,10 +117,24 @@ public class DataActivity extends AppCompatActivity {
         registered = findViewById(R.id.registeredId);
         score = findViewById(R.id.scoreId);
         scoreView = findViewById(R.id.scoreViewId);
+        lastAccepted = findViewById(R.id.lastAcceptedId);
 
         retrofitFun();
         init();
         new Task().execute();
+
+        scatterChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Toast.makeText(DataActivity.this, "Rating: " + e.getY() +
+                        "\nAC Problem No: " + e.getX(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
     }
 
     class Task extends AsyncTask<String, Integer, Boolean> {
@@ -139,6 +156,22 @@ public class DataActivity extends AppCompatActivity {
                 public void onResponse(Call<UserStatus> call, Response<UserStatus> response) {
 
                     List<Result> results = response.body().getResults();
+
+                    for (Result result : results) {
+                        if (result.getVerdict().equals("OK")) {
+                            lastACProblem = result.getProblem().getName();
+                            if (result.getProblem().getRating() != -1) {
+                                lastACProblem += ", " + result.getProblem().getRating();
+                            }
+
+                            if (!lastACProblem.equals("null")) {
+                                lastAccepted.setText("Last AC: " + lastACProblem);
+                            } else {
+                                lastAccepted.setVisibility(View.GONE);
+                            }
+                            break;
+                        }
+                    }
 
                     // to get oldest to newest sumbission
                     Collections.reverse(results);

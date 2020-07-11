@@ -6,20 +6,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Fragment2">
-
     <SearchView
         android:id="@+id/searchViewId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:queryHint="Ex. watermelon"/>
 
-    <ListView
-        android:id="@+id/listViewId"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutId"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="#ff22"
-        android:dividerHeight="2dp"
-        android:listSelector="#158EED"/>
+        android:layout_height="match_parent">
 
+        <ListView
+            android:id="@+id/listViewId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="#ff22"
+            android:dividerHeight="2dp"
+            android:listSelector="#158EED"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

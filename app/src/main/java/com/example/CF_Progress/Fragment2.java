@@ -10,8 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ public class Fragment2 extends Fragment {
 
     ListView listView;
     SearchView searchView;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String TAG = "MainActivityFF";
     private static final String BASE_URL = "https://codeforces.com/api/";
@@ -51,6 +54,7 @@ public class Fragment2 extends Fragment {
 
         searchView = view.findViewById(R.id.searchViewId);
         listView = view.findViewById(R.id.listViewId);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutId);
 
         retrofitFun();
         getProblemList();
@@ -58,6 +62,16 @@ public class Fragment2 extends Fragment {
         adapter = new ArrayAdapter<>(getActivity(), R.layout.sample_view, R.id.textViewId, problemNames);
         listView.setAdapter(adapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getProblemList();
+                adapter = new ArrayAdapter<>(getActivity(), R.layout.sample_view, R.id.textViewId, problemNames);
+                listView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Refreshed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

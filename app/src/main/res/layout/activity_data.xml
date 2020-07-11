@@ -165,8 +165,8 @@
                     android:layout_marginEnd="0dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toStartOf="@+id/scoreViewId"
-                    android:progressBackgroundTint="#91958F"
-                    android:progressTint="#02AE0B" />
+                    android:progressBackgroundTint="#E4EFDE"
+                    android:progressTint="#14CD1E" />
 
                 <TextView
                     android:id="@+id/scoreViewId"
@@ -178,10 +178,10 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginEnd="5dp"
                     android:gravity="end|top"
+                    android:paddingBottom="15dp"
                     android:text="100/100"
                     android:textColor="@color/colorBlack"
-                    android:textSize="10dp"
-                    android:paddingBottom="15dp"/>
+                    android:textSize="10dp" />
 
             </RelativeLayout>
 
@@ -190,7 +190,7 @@
                 android:layout_height="1dp"
                 android:layout_margin="10dp"
                 android:background="#c0c0c0"
-                android:paddingTop="0dp"/>
+                android:paddingTop="0dp" />
 
             <!--user details-->
             <LinearLayout
@@ -278,6 +278,16 @@
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
                     android:text="Organization"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/lastAcceptedId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:text="LastAccepted"
                     android:textColor="@color/colorBlack"
                     android:textSize="15dp" />
 
