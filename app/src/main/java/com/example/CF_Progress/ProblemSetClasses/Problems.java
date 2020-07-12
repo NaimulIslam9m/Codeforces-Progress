@@ -1,4 +1,4 @@
-package com.example.CF_Progress;
+package com.example.CF_Progress.ProblemSetClasses;
 
 public class Problems {
     private int contestId;

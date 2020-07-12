@@ -1,4 +1,4 @@
-package com.example.CF_Progress;
+package com.example.CF_Progress.Fragment2;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.CF_Progress.R;
 
 public class ProblemActivity extends AppCompatActivity {
     private WebView webView;

@@ -1,4 +1,4 @@
-package com.example.CF_Progress;
+package com.example.CF_Progress.Fragment1;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,6 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.CF_Progress.APIInterfaces.ApiInterfaceGetStatus;
+import com.example.CF_Progress.APIInterfaces.ApiInterfaceGetUserInfo;
+import com.example.CF_Progress.R;
+import com.example.CF_Progress.UserInfoClasses.ResultOfUserInfo;
+import com.example.CF_Progress.UserInfoClasses.UserInfo;
+import com.example.CF_Progress.UserStatusClasses.Result;
+import com.example.CF_Progress.UserStatusClasses.UserStatus;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.ScatterChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -30,11 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;

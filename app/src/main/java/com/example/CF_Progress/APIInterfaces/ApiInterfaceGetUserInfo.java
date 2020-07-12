@@ -1,4 +1,6 @@
-package com.example.CF_Progress;
+package com.example.CF_Progress.APIInterfaces;
+
+import com.example.CF_Progress.UserInfoClasses.UserInfo;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

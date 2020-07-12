@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".DataActivity">
+    tools:context=".Fragment1.DataActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -38,8 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                // image view
-
+                <!--Image View-->
                 <androidx.cardview.widget.CardView
                     android:layout_width="80dp"
                     android:layout_height="80dp"

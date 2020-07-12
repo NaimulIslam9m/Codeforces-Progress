@@ -1,4 +1,4 @@
-package com.example.CF_Progress;
+package com.example.CF_Progress.UserStatusClasses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,4 +1,4 @@
-package com.example.CF_Progress;
+package com.example.CF_Progress.Fragment2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.example.CF_Progress.APIInterfaces.ApiInterfaceProblemSet;
+import com.example.CF_Progress.ProblemSetClasses.ProblemSet;
+import com.example.CF_Progress.ProblemSetClasses.Problems;
+import com.example.CF_Progress.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
