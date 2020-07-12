@@ -298,11 +298,49 @@
                 android:layout_margin="10dp"
                 android:background="#c0c0c0" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:shadowColor="@android:color/black"
+                android:shadowDx="0"
+                android:shadowDy="5"
+                android:shadowRadius="13"
+                android:text="AC Submission Rating Over Time"
+                android:textColor="@color/colorBlack"
+                android:textSize="16.5dp" />
+
             <com.github.mikephil.charting.charts.ScatterChart
                 android:id="@+id/scatterChart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
+                android:layout_marginBottom="20dp"
                 android:baselineAligned="false" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="10dp"
+                android:background="#c0c0c0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:shadowColor="@android:color/black"
+                android:shadowDx="0"
+                android:shadowDy="5"
+                android:shadowRadius="13"
+                android:text="AC Submission Rating On Contest Over Time"
+                android:textColor="@color/colorBlack"
+                android:textSize="16.5dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChartId"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginBottom="20dp" />
+
         </LinearLayout>
 
     </FrameLayout>

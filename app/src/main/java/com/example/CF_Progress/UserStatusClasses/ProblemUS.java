@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Problem {
+public class ProblemUS {
     @SerializedName("contestId")
     @Expose
     private int contestId;
@@ -54,7 +54,7 @@ public class Problem {
     }
 
     /*
-     * Problem name
+     * ProblemCS name
      */
     public String getName() {
         return name;
@@ -79,7 +79,7 @@ public class Problem {
     /*
      * Integer.
      * Can be absent.
-     * Problem rating (difficulty).
+     * ProblemCS rating (difficulty).
      */
     public int getRating() {
         return rating;

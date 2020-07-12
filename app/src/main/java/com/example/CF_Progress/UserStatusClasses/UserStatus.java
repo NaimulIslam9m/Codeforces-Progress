@@ -12,7 +12,7 @@ public class UserStatus {
 
     @SerializedName("result")
     @Expose
-    private List<Result> results = null;
+    private List<ResultUS> results = null;
 
     @SerializedName("comment")
     @Expose
@@ -28,7 +28,7 @@ public class UserStatus {
     /*
      * Returns a "list of Submission objects", sorted in decreasing order of submission id.
      */
-    public List<Result> getResults() {
+    public List<ResultUS> getResults() {
         return results;
     }
 

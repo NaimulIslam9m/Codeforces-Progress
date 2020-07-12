@@ -1,5 +1,6 @@
 package com.example.CF_Progress.Fragment1;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,18 +20,23 @@ import com.example.CF_Progress.APIInterfaces.ApiInterfaceGetUserInfo;
 import com.example.CF_Progress.R;
 import com.example.CF_Progress.UserInfoClasses.ResultOfUserInfo;
 import com.example.CF_Progress.UserInfoClasses.UserInfo;
-import com.example.CF_Progress.UserStatusClasses.Result;
+import com.example.CF_Progress.UserStatusClasses.ResultUS;
 import com.example.CF_Progress.UserStatusClasses.UserStatus;
 import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.ScatterChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -72,6 +78,12 @@ public class DataActivity extends AppCompatActivity {
     private ArrayList<IScatterDataSet> scatterDataSets = new ArrayList<>();
     private ScatterData scatterData;
 
+    private LineChart lineChart;
+    private ArrayList<ArrayList<Entry>> lineEntries = new ArrayList<>();
+    private ArrayList<Entry> xAxisDummy = new ArrayList<>();
+    private ArrayList<Integer> participatedContestId = new ArrayList<>();
+    private ArrayList<ILineDataSet> lineDataSets = new ArrayList<>();
+
     private LinearLayout LLProgressBar, LLData;
 
     private ImageView avatar;
@@ -86,6 +98,9 @@ public class DataActivity extends AppCompatActivity {
     double penalty = 0;
     long userScore;
     String lastACProblem = null;
+    int MAX_PARTICIPATED_CONTEST_ID = 0;
+    int MIN_PARTICIPATED_CONTEST_ID = Integer.MAX_VALUE;
+    int MAX_LIMIT_CONTESTS = 2000;
 
     private ProgressBar score;
 
@@ -108,6 +123,7 @@ public class DataActivity extends AppCompatActivity {
         handleName.setText(handle);
 
         scatterChart = findViewById(R.id.scatterChart);
+        lineChart = findViewById(R.id.lineChartId);
         avatar = findViewById(R.id.avatarId);
         fullName = findViewById(R.id.fullNameId);
         rating = findViewById(R.id.ratingId);
@@ -139,6 +155,19 @@ public class DataActivity extends AppCompatActivity {
 
             }
         });
+
+        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Toast.makeText(DataActivity.this, "Rating: " + e.getY() +
+                        "\nContest Id: " + e.getX(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
     }
 
     class Task extends AsyncTask<String, Integer, Boolean> {
@@ -152,16 +181,16 @@ public class DataActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(String... strings) {
 
-            Call<UserStatus> call = apiInterfaceGS.getUserStatus(handle, FROM, COUNT);
-            call.enqueue(new Callback<UserStatus>() {
+            Call<UserStatus> callUS = apiInterfaceGS.getUserStatus(handle, FROM, COUNT);
+            callUS.enqueue(new Callback<UserStatus>() {
 
                 @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public void onResponse(Call<UserStatus> call, Response<UserStatus> response) {
 
-                    List<Result> results = response.body().getResults();
+                    List<ResultUS> results = response.body().getResults();
 
-                    for (Result result : results) {
+                    for (ResultUS result : results) {
                         if (result.getVerdict().equals("OK")) {
                             lastACProblem = result.getProblem().getName();
                             if (result.getProblem().getRating() != -1) {
@@ -181,7 +210,7 @@ public class DataActivity extends AppCompatActivity {
                     Collections.reverse(results);
                     HashSet<String> hs = new HashSet<>();
 
-                    for (Result result : results) {
+                    for (ResultUS result : results) {
                         if (result.getVerdict().equals("OK")) {
                             y = result.getProblem().getRating(); // rating
                             String problemName = result.getProblem().getName();
@@ -211,6 +240,13 @@ public class DataActivity extends AppCompatActivity {
                                 else if (y <= 3500) penalty = 0.01;
 
                                 currentValue += (y - y*penalty*diff);
+
+                                if (result.getAuthor().getParticipantType().equals("CONTESTANT")) {
+                                    lineEntries.get(result.getContestId()).add(new Entry(result.getContestId(), y));
+                                    participatedContestId.add(result.getContestId());
+                                    MAX_PARTICIPATED_CONTEST_ID = Math.max(MAX_PARTICIPATED_CONTEST_ID, result.getContestId());
+                                    MIN_PARTICIPATED_CONTEST_ID = Math.min(MIN_PARTICIPATED_CONTEST_ID, result.getContestId());
+                                }
                             }
                         }
                     }
@@ -257,6 +293,50 @@ public class DataActivity extends AppCompatActivity {
                     yAxis.setDrawGridLines(true);
                     yAxis.setSpaceTop(1);
                     yAxis.setAxisMinimum(750f);
+
+
+                    LineDataSet lineDataSet;
+                    xAxisDummy.add(new Entry(MIN_PARTICIPATED_CONTEST_ID, 800));
+                    xAxisDummy.add(new Entry(MAX_PARTICIPATED_CONTEST_ID, 800));
+                    lineDataSet = new LineDataSet(xAxisDummy, "");
+                    lineDataSet.setColor(Color.WHITE, 0);
+                    lineDataSet.setDrawCircles(false);
+                    lineDataSet.setValueTextColor(Color.WHITE);
+                    lineDataSets.add(lineDataSet);
+
+                    for (Integer i : participatedContestId) {
+                        lineDataSet = new LineDataSet(lineEntries.get(i), "");
+                        lineDataSet.setColor(Color.GREEN, 200);
+                        lineDataSet.setCircleHoleRadius(10f);
+                        lineDataSet.setCircleColors(ColorTemplate.COLORFUL_COLORS);
+                        lineDataSets.add(lineDataSet);
+                    }
+
+                    lineChart.setData(new LineData(lineDataSets));
+
+                    // set scrollable and scalable
+                    lineChart.setDragEnabled(true);
+                    lineChart.setScaleEnabled(true);
+
+                    lineChart.animateXY(0, 5000, Easing.EaseOutBounce, Easing.EaseOutBounce);
+                    lineChart.invalidate();
+
+                    lineChart.getDescription().setEnabled(false);
+                    lineChart.getLegend().setEnabled(false);
+
+                    // axis properties
+                    lineChart.getAxisRight().setEnabled(false);
+                    xAxis = lineChart.getXAxis();
+                    xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+                    xAxis.setGranularity(1f);
+                    xAxis.setGranularityEnabled(true);
+                    xAxis.setDrawGridLines(true);
+                    xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+                    yAxis = lineChart.getAxisLeft();
+                    yAxis.setDrawGridLines(true);
+                    yAxis.setSpaceTop(1);
                 }
 
                 @Override
@@ -438,7 +518,7 @@ public class DataActivity extends AppCompatActivity {
 
                     for (int i = 0; i <= userScore; i++) {
                         try {
-                            Thread.sleep(40);
+                            Thread.sleep(35);
                             score.setProgress(i);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -466,6 +546,10 @@ public class DataActivity extends AppCompatActivity {
     private void init() {
         for (int i = 0; i < 28; i++) {
             entries.add(new ArrayList());
+        }
+
+        for (int i = 0; i < MAX_LIMIT_CONTESTS; i++) {
+            lineEntries.add(new ArrayList<Entry>());
         }
     }
 

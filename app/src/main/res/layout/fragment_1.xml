@@ -14,7 +14,8 @@
         app:fab_addButtonColorNormal="#ff22"
         app:fab_addButtonColorPressed="#03A9F4"
         app:fab_addButtonPlusIconColor="@android:color/white"
-        app:fab_labelStyle="@style/CustomFab">
+        app:fab_labelStyle="@style/CustomFab"
+        android:layout_margin="15dp">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/addHandleButtonId"

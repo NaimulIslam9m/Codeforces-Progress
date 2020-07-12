@@ -3,14 +3,14 @@ package com.example.CF_Progress.UserStatusClasses;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+public class ResultUS {
     @SerializedName("id")
     @Expose
     private long id;
 
     @SerializedName("contestId")
     @Expose
-    private long contestId;
+    private int contestId;
 
     @SerializedName("creationTimeSeconds")
     @Expose
@@ -22,7 +22,11 @@ public class Result {
 
     @SerializedName("problem")
     @Expose
-    private Problem problem;
+    private ProblemUS problem;
+
+    @SerializedName("author")
+    @Expose
+    private Author author;
 
     @SerializedName("programmingLanguage")
     @Expose
@@ -48,6 +52,7 @@ public class Result {
     @Expose
     private int memoryConsumedBytes;
 
+
     /*
      *
      */
@@ -60,7 +65,7 @@ public class Result {
      * Can be absent.
      * Id of the contest, in which party is participating.
      */
-    public long getContestId() {
+    public int getContestId() {
         return contestId;
     }
 
@@ -84,8 +89,12 @@ public class Result {
     /*
      * Returns an object which has details of a problem
      */
-    public Problem getProblem() {
+    public ProblemUS getProblem() {
         return problem;
+    }
+
+    public Author getAuthor() {
+        return author;
     }
 
     /*
