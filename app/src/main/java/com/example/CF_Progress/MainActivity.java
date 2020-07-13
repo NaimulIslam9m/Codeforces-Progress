@@ -2,6 +2,7 @@ package com.example.CF_Progress;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         setupViewPager(viewPager);
-
         tabLayout.setupWithViewPager(viewPager);
     }
 

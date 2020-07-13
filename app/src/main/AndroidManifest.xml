@@ -14,6 +14,9 @@
         <activity
             android:name=".Fragment1.AddHandleActivity"
             android:theme="@style/AppTheme.CustomTheme" />
+        <activity
+            android:name=".Fragment1.DeleteHandleActivity"
+            android:theme="@style/AppTheme.CustomTheme" />
         <activity android:name=".MainActivity" />
         <activity android:name=".Fragment1.DataActivity" />
         <activity android:name=".Fragment2.ProblemActivity" />
@@ -24,7 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

@@ -2,7 +2,6 @@ package com.example.CF_Progress.Fragment1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -13,16 +12,16 @@ import android.widget.Toast;
 import com.example.CF_Progress.R;
 import com.example.CF_Progress.SQLiteDataBase.DataBaseHelper;
 
-public class AddHandleActivity extends AppCompatActivity {
+public class DeleteHandleActivity extends AppCompatActivity {
 
     DataBaseHelper dataBaseHelper;
     EditText editTextHandle; // For taking input handle from the user
-    Button addButton; // For submitting the input handle
+    Button deleteButton; // For deleting the input handle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_handle);
+        setContentView(R.layout.activity_delete_handle);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -30,14 +29,14 @@ public class AddHandleActivity extends AppCompatActivity {
         int width = displayMetrics.widthPixels;
         int height = displayMetrics.heightPixels;
 
-        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.25));
+        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.25));
 
         dataBaseHelper = new DataBaseHelper(this);
 
-        addButton = findViewById(R.id.addButtonId);
-        editTextHandle = findViewById(R.id.addHandleEditTextId);
+        deleteButton = findViewById(R.id.deleteButtonId);
+        editTextHandle = findViewById(R.id.deleteHandleEditTextId);
 
-        addButton.setOnClickListener(new View.OnClickListener() {
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StringBuffer text = new StringBuffer(editTextHandle.getText().toString());
@@ -49,20 +48,20 @@ public class AddHandleActivity extends AppCompatActivity {
                 }
 
                 if (text.length() > 0) {
-                    long rowId = dataBaseHelper.insertHandle(text.toString());
-                    if (rowId != -1) {
-                        toastMessage("success");
+                    int val = dataBaseHelper.deleteHandle(text.toString());
+                    if (val > 0) {
+                        toastMessage("deleted");
                     } else {
-                        toastMessage("failed");
+                        toastMessage("error");
                     }
                 } else {
-                    Toast.makeText(AddHandleActivity.this, "Please input a handle", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeleteHandleActivity.this, "Please input a handle", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
     void toastMessage(String message) {
-        Toast.makeText(AddHandleActivity.this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DeleteHandleActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 }

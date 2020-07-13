@@ -96,11 +96,11 @@ public class DataActivity extends AppCompatActivity {
     long prevSubmissionTime = 0;
     long diff = 0; // difference of days between consecutive submissions
     double penalty = 0;
-    long userScore;
+    long userScore = 0;
     String lastACProblem = null;
-    int MAX_PARTICIPATED_CONTEST_ID = 0;
-    int MIN_PARTICIPATED_CONTEST_ID = Integer.MAX_VALUE;
     int MAX_LIMIT_CONTESTS = 2000;
+    int MAX_PARTICIPATED_CONTEST_ID = 0;
+    int MIN_PARTICIPATED_CONTEST_ID = MAX_LIMIT_CONTESTS;
 
     private ProgressBar score;
 
@@ -146,21 +146,8 @@ public class DataActivity extends AppCompatActivity {
         scatterChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                Toast.makeText(DataActivity.this, "Rating: " + e.getY() +
-                        "\nAC Problem No: " + e.getX(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
-
-        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                Toast.makeText(DataActivity.this, "Rating: " + e.getY() +
-                        "\nContest Id: " + e.getX(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DataActivity.this, "Rating: " + (int)e.getY() +
+                        "\nAC Problem No: " + (int)e.getX(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -250,7 +237,9 @@ public class DataActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    userScore = currentValue/35/(x-1);
+                    if (x > 0) {
+                        userScore = currentValue / 35 / x;
+                    }
                     scoreView.setText(String.valueOf(userScore) + "/100");
 
                     int[] ratingArray = getResources().getIntArray(R.array.cf_lvl);
@@ -318,7 +307,7 @@ public class DataActivity extends AppCompatActivity {
                     lineChart.setDragEnabled(true);
                     lineChart.setScaleEnabled(true);
 
-                    lineChart.animateXY(0, 5000, Easing.EaseOutBounce, Easing.EaseOutBounce);
+                    lineChart.animateXY(5000, 0, Easing.EaseInElastic, Easing.EaseInExpo);
                     lineChart.invalidate();
 
                     lineChart.getDescription().setEnabled(false);
