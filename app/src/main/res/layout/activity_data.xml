@@ -306,7 +306,7 @@
                 android:shadowDx="0"
                 android:shadowDy="5"
                 android:shadowRadius="13"
-                android:text="AC Submission Rating Over Time"
+                android:text="Problem Rating vs. AC Submission"
                 android:textColor="@color/colorBlack"
                 android:textSize="16.5dp" />
 
@@ -331,7 +331,7 @@
                 android:shadowDx="0"
                 android:shadowDy="5"
                 android:shadowRadius="13"
-                android:text="AC Submission Rating On Contest Over Time"
+                android:text="AC Problem Rating vs. Contest Id"
                 android:textColor="@color/colorBlack"
                 android:textSize="16.5dp" />
 

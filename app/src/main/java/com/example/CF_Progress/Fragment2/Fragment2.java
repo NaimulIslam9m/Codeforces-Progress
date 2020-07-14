@@ -6,13 +6,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.CF_Progress.APIInterfaces.ApiInterfaceProblemSet;
@@ -36,7 +39,8 @@ public class Fragment2 extends Fragment {
         // Required empty public constructor
     }
 
-    ListView listView;
+    RecyclerView recyclerView;
+    ProblemListAdapter problemListAdapter;
     SearchView searchView;
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -49,8 +53,6 @@ public class Fragment2 extends Fragment {
     List<String> problemNames = new ArrayList<>();
     HashMap<String, String> problemUrl = new HashMap<>();
 
-    ArrayAdapter<String> adapter;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -58,36 +60,47 @@ public class Fragment2 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_2, container, false);
 
         searchView = view.findViewById(R.id.searchViewId);
-        listView = view.findViewById(R.id.listViewId);
+        recyclerView = view.findViewById(R.id.recyclerViewProblemListId);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutId);
 
         retrofitFun();
         getProblemList();
 
-        adapter = new ArrayAdapter<>(getActivity(), R.layout.sample_view, R.id.textViewId, problemNames);
-        listView.setAdapter(adapter);
-
+        problemListAdapter = new ProblemListAdapter(getContext(), problemNames);
+        recyclerView.setAdapter(problemListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                problemNames.clear();
                 getProblemList();
-                adapter = new ArrayAdapter<>(getActivity(), R.layout.sample_view, R.id.textViewId, problemNames);
-                listView.setAdapter(adapter);
+                problemListAdapter = new ProblemListAdapter(getActivity(), problemNames);
+                recyclerView.setAdapter(problemListAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                LayoutAnimationController layoutAnimationController =
+                        AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
+                recyclerView.setLayoutAnimation(layoutAnimationController);
+                recyclerView.getAdapter().notifyDataSetChanged();
+                recyclerView.scheduleLayoutAnimation();
+
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Refreshed", Toast.LENGTH_SHORT).show();
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        problemListAdapter.setOnItemClickListener(new ProblemListAdapter.ClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intentProblemActivity = new Intent(view.getContext(), ProblemActivity.class);
-                intentProblemActivity.putExtra("tag", problemUrl.get(adapter.getItem(position)));
+            public void OnItemClick(int position, View v) {
+                Intent intentProblemActivity = new Intent(v.getContext(), ProblemActivity.class);
+                intentProblemActivity.putExtra("tag", problemUrl.get(problemNames.get(position)));
                 startActivity(intentProblemActivity);
             }
         });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+/*        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -98,7 +111,7 @@ public class Fragment2 extends Fragment {
                 adapter.getFilter().filter(newText);
                 return false;
             }
-        });
+        });*/
 
         return view;
     }
@@ -114,18 +127,22 @@ public class Fragment2 extends Fragment {
     }
 
     private void getProblemList() {
+        Log.d("Fuck", "1");
         Call<ProblemSet> call = apiInterfacePS.getProblemSet();
+        Log.d("Fuck", "1");
         call.enqueue(new Callback<ProblemSet>() {
 
             @Override
             public void onResponse(Call<ProblemSet> call, Response<ProblemSet> response) {
+                Log.d("Fuck", "1");
                 List<Problems> results = response.body().getResults().getProblems();
+                Log.d("Fuck", "1");
                 for (Problems result : results) {
                     String name = result.getContestId() + result.getIndex() + ": " + result.getName();
                     String url = "https://codeforces.com/problemset/problem/" + result.getContestId() + "/" + result.getIndex() + "?mobile=true";
                     problemNames.add(name);
                     problemUrl.put(name, url);
-                    adapter.notifyDataSetChanged();
+                    problemListAdapter.notifyDataSetChanged();
                 }
             }
 

@@ -2,7 +2,6 @@ package com.example.CF_Progress.Fragment1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -51,12 +50,12 @@ public class AddHandleActivity extends AppCompatActivity {
                 if (text.length() > 0) {
                     long rowId = dataBaseHelper.insertHandle(text.toString());
                     if (rowId != -1) {
-                        toastMessage("success");
+                        toastMessage("Successfully added " + text);
                     } else {
-                        toastMessage("failed");
+                        toastMessage("Failed");
                     }
                 } else {
-                    Toast.makeText(AddHandleActivity.this, "Please input a handle", Toast.LENGTH_SHORT).show();
+                    toastMessage("Please input a handle");
                 }
             }
         });

@@ -61,19 +61,7 @@ public class ProblemActivity extends AppCompatActivity {
             webView.loadUrl(url);
         }
 
-        // adding back button
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
     }
-//    // adding back button
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        if (item.getItemId() == android.R.id.home) {
-//            this.finish();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     // to go back nearest parent on website
     @Override

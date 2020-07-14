@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -160,9 +161,9 @@ public class DataActivity extends AppCompatActivity {
     class Task extends AsyncTask<String, Integer, Boolean> {
         @Override
         protected void onPreExecute() {
+            super.onPreExecute();
             LLProgressBar.setVisibility(View.VISIBLE);
             LLData.setVisibility(View.GONE);
-            super.onPreExecute();
         }
 
         @Override
@@ -183,6 +184,11 @@ public class DataActivity extends AppCompatActivity {
                             if (result.getProblem().getRating() != -1) {
                                 lastACProblem += ", " + result.getProblem().getRating();
                             }
+
+                            Date date = new Date(result.getCreationTimeSeconds() * 1000L);
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+                            sdf.setTimeZone(TimeZone.getTimeZone("Bangladesh/Dhaka"));
+                            lastACProblem += ", " + sdf.format(date);
 
                             if (!lastACProblem.equals("null")) {
                                 lastAccepted.setText("Last AC: " + lastACProblem);
@@ -355,7 +361,7 @@ public class DataActivity extends AppCompatActivity {
                     String mFriendOfCount = "Friend of: " + result.getFriendOfCount();
                     String mEmail = "Email: " + result.getEmail();
                     Date d = new Date(result.getRegistrationTimeSeconds() * 1000L);
-                    String date = new SimpleDateFormat("dd MMM, yyyy").format(d);
+                    String date = new SimpleDateFormat("dd-MMM-yyyy").format(d);
                     String mRegistered = "Registered: " + date;
 
                     Picasso.get().load(mImageAvatar).into(avatar);
@@ -487,7 +493,7 @@ public class DataActivity extends AppCompatActivity {
             });
 
             try {
-                Thread.sleep(4000);
+                Thread.sleep(3500);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -507,7 +513,7 @@ public class DataActivity extends AppCompatActivity {
 
                     for (int i = 0; i <= userScore; i++) {
                         try {
-                            Thread.sleep(35);
+                            Thread.sleep(20);
                             score.setProgress(i);
                         } catch (InterruptedException e) {
                             e.printStackTrace();

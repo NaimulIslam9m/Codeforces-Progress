@@ -13,7 +13,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "Handles";
     private static final String DATABASE_NAME = "Handles.db";
     private static final String HANDLE = "_handle";
-    private static final String CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+"( "+HANDLE+" VARCHAR(300) PRIMARY KEY); ";
+    private static final String CREATE_TABLE = "CREATE TABLE " +TABLE_NAME+ "( " +HANDLE+ " VARCHAR(300) PRIMARY KEY); ";
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     private static final String SELECT_ALL = "SELECT * FROM " + TABLE_NAME;
     private static int VERSION_NUMBER = 1;
@@ -29,9 +29,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         try {
             db.execSQL(CREATE_TABLE);
-            toastMessage("OnCreate is called");
         } catch (Exception e) {
-            toastMessage("OnCreate Exception: " + e.getMessage());
+            // exception
         }
     }
 
@@ -39,10 +38,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         try {
             db.execSQL(DROP_TABLE);
-            toastMessage("onUpgrade is called");
             onCreate(db);
         } catch (Exception e) {
-            toastMessage("onUpgrade Exception: " + e.getMessage());
+            // exception
         }
     }
 

@@ -3,16 +3,18 @@ package com.example.CF_Progress.Fragment1;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.CF_Progress.R;
 import com.example.CF_Progress.SQLiteDataBase.DataBaseHelper;
@@ -27,11 +29,12 @@ public class Fragment1 extends Fragment {
         // Required empty public constructor
     }
 
-    ListView listView;
+    SwipeRefreshLayout swipeRefreshLayout;
     List<String> handleNames = new ArrayList<>();
     DataBaseHelper dataBaseHelper;
     FloatingActionButton addHandleButton, removeHandleButton;
-    ArrayAdapter<String> adapter;
+    HandleListAdapter handleListAdapter;
+    RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,17 +45,48 @@ public class Fragment1 extends Fragment {
 
         addHandleButton = view.findViewById(R.id.addHandleButtonId);
         removeHandleButton = view.findViewById(R.id.removeHandleButtonId);
-        listView = view.findViewById(R.id.listViewHandleId);
-        showHandles();
-        adapter = new ArrayAdapter<>(getActivity(), R.layout.sample_view, R.id.textViewId, handleNames);
-        listView.setAdapter(adapter);
+        recyclerView = view.findViewById(R.id.recyclerViewHandleId);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutId);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        showHandles();
+
+        handleListAdapter = new HandleListAdapter(getContext(), handleNames);
+        recyclerView.setAdapter(handleListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(view.getContext(), DataActivity.class);
-                intent.putExtra("tag", adapter.getItem(position));
+            public void onRefresh() {
+                handleNames.clear();
+                showHandles();
+                handleListAdapter = new HandleListAdapter(getActivity(), handleNames);
+                recyclerView.setAdapter(handleListAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                LayoutAnimationController layoutAnimationController =
+                        AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
+                recyclerView.setLayoutAnimation(layoutAnimationController);
+                recyclerView.getAdapter().notifyDataSetChanged();
+                recyclerView.scheduleLayoutAnimation();
+
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Refreshed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        handleListAdapter.setOnItemClickListener(new HandleListAdapter.ClickListener() {
+            @Override
+            public void OnItemClick(int position, View v) {
+                Intent intent = new Intent(v.getContext(), DataActivity.class);
+                intent.putExtra("tag", handleNames.get(position));
                 startActivity(intent);
+            }
+
+            @Override
+            public void OnItemLongClick(int position, View v) {
+                Toast.makeText(getContext(), "on item long clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -80,11 +114,12 @@ public class Fragment1 extends Fragment {
                 handleNames.add(resultSet.getString(0));
             }
         } else {
-            toastMessage("no data found");
+            toastMessage("No data found");
         }
     }
 
     void toastMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 }
