@@ -22,6 +22,7 @@ import com.example.CF_Progress.APIInterfaces.ApiInterfaceProblemSet;
 import com.example.CF_Progress.ProblemSetClasses.ProblemSet;
 import com.example.CF_Progress.ProblemSetClasses.Problems;
 import com.example.CF_Progress.R;
+import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class Fragment2 extends Fragment {
         // Required empty public constructor
     }
 
+
     RecyclerView recyclerView;
     ProblemListAdapter problemListAdapter;
     SearchView searchView;
@@ -52,6 +54,8 @@ public class Fragment2 extends Fragment {
 
     List<String> problemNames = new ArrayList<>();
     List<String> problemNamesAll = new ArrayList<>();
+    List<Integer> problemRating = new ArrayList<>();
+    ArrayList<ArrayList<String>> problemTags = new ArrayList<>();
     HashMap<String, String> problemUrl = new HashMap<>();
 
     @Override
@@ -67,7 +71,7 @@ public class Fragment2 extends Fragment {
         retrofitFun();
         getProblemList();
 
-        problemListAdapter = new ProblemListAdapter(getContext(), problemNames, problemNamesAll);
+        problemListAdapter = new ProblemListAdapter(getContext(), problemNames, problemNamesAll, problemTags, problemRating);
         recyclerView.setAdapter(problemListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
@@ -78,14 +82,9 @@ public class Fragment2 extends Fragment {
             public void onRefresh() {
                 problemNames.clear();
                 getProblemList();
-                problemListAdapter = new ProblemListAdapter(getActivity(), problemNames, problemNamesAll);
+                problemListAdapter = new ProblemListAdapter(getActivity(), problemNames, problemNamesAll, problemTags, problemRating);
                 recyclerView.setAdapter(problemListAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                LayoutAnimationController layoutAnimationController =
-                        AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
-                recyclerView.setLayoutAnimation(layoutAnimationController);
-                recyclerView.getAdapter().notifyDataSetChanged();
-                recyclerView.scheduleLayoutAnimation();
 
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Refreshed", Toast.LENGTH_SHORT).show();
@@ -142,6 +141,8 @@ public class Fragment2 extends Fragment {
                     problemNames.add(name);
                     problemNamesAll.add(name);
                     problemUrl.put(name, url);
+                    problemRating.add(result.getRating());
+                    problemTags.add(result.getTags());
                     problemListAdapter.notifyDataSetChanged();
                 }
             }

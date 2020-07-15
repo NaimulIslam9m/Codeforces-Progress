@@ -28,7 +28,7 @@ public class HandleListAdapter extends RecyclerView.Adapter<HandleListAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.sample_view, parent, false);
+        View view = layoutInflater.inflate(R.layout.fragment_1_sample_view, parent, false);
         return new ViewHolder(view);
     }
 
@@ -42,32 +42,24 @@ public class HandleListAdapter extends RecyclerView.Adapter<HandleListAdapter.Vi
         return handleNames.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView handleTV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            handleTV = itemView.findViewById(R.id.textViewId);
+            handleTV = itemView.findViewById(R.id.handleNameId);
 
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             clickListener.OnItemClick(getAdapterPosition(), v);
         }
-
-        @Override
-        public boolean onLongClick(View v) {
-            clickListener.OnItemLongClick(getAdapterPosition(), v);
-            return false;
-        }
     }
 
     public interface ClickListener {
         void OnItemClick(int position, View v);
-        void OnItemLongClick(int position, View v);
     }
 
     public void setOnItemClickListener(ClickListener clickListener) {

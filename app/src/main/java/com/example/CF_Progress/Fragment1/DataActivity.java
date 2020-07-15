@@ -93,7 +93,7 @@ public class DataActivity extends AppCompatActivity {
                      scoreView, lastAccepted;
 
     long currentValue = 0;
-    boolean firsttime = true;
+    boolean firstTime = true;
     long prevSubmissionTime = 0;
     long diff = 0; // difference of days between consecutive submissions
     double penalty = 0;
@@ -139,11 +139,9 @@ public class DataActivity extends AppCompatActivity {
         score = findViewById(R.id.scoreId);
         scoreView = findViewById(R.id.scoreViewId);
         lastAccepted = findViewById(R.id.lastAcceptedId);
-
         retrofitFun();
         init();
         new Task().execute();
-
         scatterChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -213,9 +211,9 @@ public class DataActivity extends AppCompatActivity {
                                 hs.add(problemName);
                                 x++;
 
-                                if (firsttime) {
+                                if (firstTime) {
                                     prevSubmissionTime = result.getCreationTimeSeconds();
-                                    firsttime = false;
+                                    firstTime = false;
                                 } else {
                                     diff = (result.getCreationTimeSeconds() - prevSubmissionTime)/86400;
                                     prevSubmissionTime = result.getCreationTimeSeconds();
@@ -493,7 +491,7 @@ public class DataActivity extends AppCompatActivity {
             });
 
             try {
-                Thread.sleep(3500);
+                Thread.sleep(3000);
             } catch (Exception e) {
                 e.printStackTrace();
             }

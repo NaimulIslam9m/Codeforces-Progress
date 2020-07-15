@@ -83,11 +83,6 @@ public class Fragment1 extends Fragment {
                 intent.putExtra("tag", handleNames.get(position));
                 startActivity(intent);
             }
-
-            @Override
-            public void OnItemLongClick(int position, View v) {
-                Toast.makeText(getContext(), "on item long clicked", Toast.LENGTH_SHORT).show();
-            }
         });
 
         addHandleButton.setOnClickListener(new View.OnClickListener() {

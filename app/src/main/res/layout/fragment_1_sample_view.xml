@@ -6,7 +6,7 @@
     android:background="?attr/selectableItemBackground">
 
     <TextView
-        android:id="@+id/textViewId"
+        android:id="@+id/handleNameId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Problem Name"
@@ -14,4 +14,5 @@
         android:textColor="@android:color/black"
         android:layout_margin="10dp"
         />
+
 </LinearLayout>

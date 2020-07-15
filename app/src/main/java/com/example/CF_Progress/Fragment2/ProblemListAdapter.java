@@ -1,6 +1,7 @@
 package com.example.CF_Progress.Fragment2;
 
 import android.content.Context;
+import android.system.StructTimeval;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import com.example.CF_Progress.R;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProblemListAdapter extends RecyclerView.Adapter<ProblemListAdapter.ViewHolder> implements Filterable {
 
@@ -26,25 +26,38 @@ public class ProblemListAdapter extends RecyclerView.Adapter<ProblemListAdapter.
     Context context;
     List<String> problemNames;
     List<String> problemNamesAll;
+    List<Integer> problemRating;
+    ArrayList<ArrayList<String>> problemTags;
 
-
-    public ProblemListAdapter(Context context, List<String> problemNames, List<String> problemNamesAll) {
+    public ProblemListAdapter(Context context, List<String> problemNames, List<String> problemNamesAll,
+                              ArrayList<ArrayList<String>> problemTags, List<Integer> problemRating) {
         this.context = context;
         this.problemNames = problemNames;
         this.problemNamesAll = problemNamesAll;
+        this.problemTags = problemTags;
+        this.problemRating = problemRating;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.sample_view, parent, false);
+        View view = layoutInflater.inflate(R.layout.fragment_2_sample_view, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.problemTV.setText(problemNames.get(position));
+        holder.problemNameTV.setText(problemNames.get(position));
+        holder.problemRatingTV.setText("R" + problemRating.get(position));
+        String tags = "";
+        for (int i = 0; i < problemTags.get(position).size(); i++) {
+            tags += problemTags.get(position).get(i);
+            if (i != problemTags.get(position).size() - 1) {
+                tags += ", ";
+            }
+        }
+        holder.problemTagTV.setText(tags);
     }
 
     @Override
@@ -89,11 +102,13 @@ public class ProblemListAdapter extends RecyclerView.Adapter<ProblemListAdapter.
     };
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView problemTV;
+        TextView problemNameTV, problemTagTV, problemRatingTV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            problemTV = itemView.findViewById(R.id.textViewId);
+            problemNameTV = itemView.findViewById(R.id.problemNameId);
+            problemTagTV = itemView.findViewById(R.id.problemTagId);
+            problemRatingTV = itemView.findViewById(R.id.problemRatingId);
 
             itemView.setOnClickListener(this);
         }
