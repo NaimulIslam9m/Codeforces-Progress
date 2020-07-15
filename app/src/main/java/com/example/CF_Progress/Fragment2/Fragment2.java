@@ -51,6 +51,7 @@ public class Fragment2 extends Fragment {
     private ApiInterfaceProblemSet apiInterfacePS;
 
     List<String> problemNames = new ArrayList<>();
+    List<String> problemNamesAll = new ArrayList<>();
     HashMap<String, String> problemUrl = new HashMap<>();
 
     @Override
@@ -66,17 +67,18 @@ public class Fragment2 extends Fragment {
         retrofitFun();
         getProblemList();
 
-        problemListAdapter = new ProblemListAdapter(getContext(), problemNames);
+        problemListAdapter = new ProblemListAdapter(getContext(), problemNames, problemNamesAll);
         recyclerView.setAdapter(problemListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 problemNames.clear();
                 getProblemList();
-                problemListAdapter = new ProblemListAdapter(getActivity(), problemNames);
+                problemListAdapter = new ProblemListAdapter(getActivity(), problemNames, problemNamesAll);
                 recyclerView.setAdapter(problemListAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 LayoutAnimationController layoutAnimationController =
@@ -100,7 +102,7 @@ public class Fragment2 extends Fragment {
         });
 
 
-/*        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -108,10 +110,10 @@ public class Fragment2 extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
+                problemListAdapter.getFilter().filter(newText);
                 return false;
             }
-        });*/
+        });
 
         return view;
     }
@@ -127,20 +129,18 @@ public class Fragment2 extends Fragment {
     }
 
     private void getProblemList() {
-        Log.d("Fuck", "1");
         Call<ProblemSet> call = apiInterfacePS.getProblemSet();
-        Log.d("Fuck", "1");
+
         call.enqueue(new Callback<ProblemSet>() {
 
             @Override
             public void onResponse(Call<ProblemSet> call, Response<ProblemSet> response) {
-                Log.d("Fuck", "1");
                 List<Problems> results = response.body().getResults().getProblems();
-                Log.d("Fuck", "1");
                 for (Problems result : results) {
                     String name = result.getContestId() + result.getIndex() + ": " + result.getName();
                     String url = "https://codeforces.com/problemset/problem/" + result.getContestId() + "/" + result.getIndex() + "?mobile=true";
                     problemNames.add(name);
+                    problemNamesAll.add(name);
                     problemUrl.put(name, url);
                     problemListAdapter.notifyDataSetChanged();
                 }
