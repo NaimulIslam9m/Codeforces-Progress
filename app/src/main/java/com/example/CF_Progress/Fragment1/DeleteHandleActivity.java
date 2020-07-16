@@ -39,20 +39,16 @@ public class DeleteHandleActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StringBuffer text = new StringBuffer(editTextHandle.getText().toString());
-                for (int i = 0; i < text.length(); i++) {
-                    if (text.charAt(i) == ' ') {
-                        text.deleteCharAt(i);
-                        i--;
-                    }
-                }
+                String text = editTextHandle.getText().toString();
+                editTextHandle.getText().clear();
+                text = text.replaceAll(" ", "");
 
                 if (text.length() > 0) {
                     int val = dataBaseHelper.deleteHandle(text.toString());
                     if (val > 0) {
-                        toastMessage("deleted");
+                        toastMessage("Deleted");
                     } else {
-                        toastMessage("error");
+                        toastMessage("Error");
                     }
                 } else {
                     Toast.makeText(DeleteHandleActivity.this, "Please input a handle", Toast.LENGTH_SHORT).show();

@@ -1,15 +1,18 @@
 package com.example.CF_Progress.Fragment1;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.CF_Progress.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -18,10 +21,12 @@ public class HandleListAdapter extends RecyclerView.Adapter<HandleListAdapter.Vi
     private static ClickListener clickListener;
     Context context;
     List<String> handleNames;
+    List<String> handleImages;
 
-    public HandleListAdapter(Context context, List<String> handleNames) {
+    public HandleListAdapter(Context context, List<String> handleNames, List<String> handleImages) {
         this.context = context;
         this.handleNames = handleNames;
+        this.handleImages = handleImages;
     }
 
     @NonNull
@@ -35,6 +40,9 @@ public class HandleListAdapter extends RecyclerView.Adapter<HandleListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.handleTV.setText(handleNames.get(position));
+        Picasso.with(context)
+                .load(handleImages.get(position))
+                .into(holder.avatarIV);
     }
 
     @Override
@@ -44,10 +52,12 @@ public class HandleListAdapter extends RecyclerView.Adapter<HandleListAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView handleTV;
+        ImageView avatarIV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             handleTV = itemView.findViewById(R.id.handleNameId);
+            avatarIV = itemView.findViewById(R.id.handleAvatarId);
 
             itemView.setOnClickListener(this);
         }

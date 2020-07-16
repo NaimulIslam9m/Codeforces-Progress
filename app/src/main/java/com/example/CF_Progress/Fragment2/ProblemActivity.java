@@ -1,8 +1,11 @@
 package com.example.CF_Progress.Fragment2;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,6 +18,7 @@ import com.example.CF_Progress.R;
 public class ProblemActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
+    private static final int PIC_WIDTH = 900;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +38,12 @@ public class ProblemActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 progressBar.setVisibility(View.VISIBLE);
-//                setTitle("Loading...");
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 progressBar.setVisibility(View.GONE);
-//                setTitle(view.getTitle());
             }
         });
 
@@ -50,6 +52,7 @@ public class ProblemActivity extends AppCompatActivity {
         // to fit the webpage on device
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
+        webView.setInitialScale(getScale());
 
         // to add zoom
         webView.getSettings().setBuiltInZoomControls(true);
@@ -61,6 +64,14 @@ public class ProblemActivity extends AppCompatActivity {
             webView.loadUrl(url);
         }
 
+    }
+
+    private int getScale(){
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int width = display.getWidth();
+        Double val = new Double(width)/new Double(PIC_WIDTH);
+        val = val * 100d;
+        return val.intValue();
     }
 
     // to go back nearest parent on website

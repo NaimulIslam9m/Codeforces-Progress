@@ -13,10 +13,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "Handles";
     private static final String DATABASE_NAME = "Handles.db";
     private static final String HANDLE = "_handle";
-    private static final String CREATE_TABLE = "CREATE TABLE " +TABLE_NAME+ "( " +HANDLE+ " VARCHAR(300) PRIMARY KEY); ";
+    private static final String IMAGEURL = "Imageurl";
+    private static final String CREATE_TABLE = "CREATE TABLE " +TABLE_NAME+ "( " +HANDLE+ " VARCHAR(300) PRIMARY KEY, " +IMAGEURL+ " VARCHAR(200)); ";
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     private static final String SELECT_ALL = "SELECT * FROM " + TABLE_NAME;
-    private static int VERSION_NUMBER = 1;
+    private static int VERSION_NUMBER = 3;
 
     Context context;
 
@@ -44,10 +45,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long insertHandle(String handle) {
+    public long insertHandle(String handle, String imageUrl) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(HANDLE, handle);
+        contentValues.put(IMAGEURL, imageUrl);
         return sqLiteDatabase.insert(TABLE_NAME, null, contentValues);
     }
 

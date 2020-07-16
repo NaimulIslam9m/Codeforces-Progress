@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CF Progress</string>
+    <string name="app_name">Codeforces Progress</string>
     <string name="hint">Enter a handle</string>
     <string name="add_button">Add</string>
     <string name="delete_button">Delete</string>

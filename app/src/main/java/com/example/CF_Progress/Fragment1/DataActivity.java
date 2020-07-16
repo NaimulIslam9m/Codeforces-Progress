@@ -300,7 +300,7 @@ public class DataActivity extends AppCompatActivity {
                     for (Integer i : participatedContestId) {
                         lineDataSet = new LineDataSet(lineEntries.get(i), "");
                         lineDataSet.setColor(Color.GREEN, 200);
-                        lineDataSet.setCircleHoleRadius(10f);
+                        lineDataSet.setCircleHoleRadius(8f);
                         lineDataSet.setCircleColors(ColorTemplate.COLORFUL_COLORS);
                         lineDataSets.add(lineDataSet);
                     }
@@ -362,7 +362,7 @@ public class DataActivity extends AppCompatActivity {
                     String date = new SimpleDateFormat("dd-MMM-yyyy").format(d);
                     String mRegistered = "Registered: " + date;
 
-                    Picasso.get().load(mImageAvatar).into(avatar);
+                    Picasso.with(DataActivity.this).load(mImageAvatar).into(avatar);
 
                     if (!mFullName.equals("Name: null null")) {
                         fullName.setText(mFullName);
@@ -491,7 +491,7 @@ public class DataActivity extends AppCompatActivity {
             });
 
             try {
-                Thread.sleep(3000);
+                Thread.sleep(3500);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -3,6 +3,7 @@ package com.example.CF_Progress.Fragment1;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class Fragment1 extends Fragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
     List<String> handleNames = new ArrayList<>();
+    List<String> handleImages = new ArrayList<>();
     DataBaseHelper dataBaseHelper;
     FloatingActionButton addHandleButton, removeHandleButton;
     HandleListAdapter handleListAdapter;
@@ -50,7 +52,7 @@ public class Fragment1 extends Fragment {
 
         showHandles();
 
-        handleListAdapter = new HandleListAdapter(getContext(), handleNames);
+        handleListAdapter = new HandleListAdapter(getContext(), handleNames, handleImages);
         recyclerView.setAdapter(handleListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
@@ -61,12 +63,16 @@ public class Fragment1 extends Fragment {
             @Override
             public void onRefresh() {
                 handleNames.clear();
+                handleImages.clear();
+
                 showHandles();
-                handleListAdapter = new HandleListAdapter(getActivity(), handleNames);
+
+                handleListAdapter = new HandleListAdapter(getActivity(), handleNames, handleImages);
                 recyclerView.setAdapter(handleListAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 LayoutAnimationController layoutAnimationController =
                         AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
+
                 recyclerView.setLayoutAnimation(layoutAnimationController);
                 recyclerView.getAdapter().notifyDataSetChanged();
                 recyclerView.scheduleLayoutAnimation();
@@ -107,6 +113,7 @@ public class Fragment1 extends Fragment {
         if (resultSet.getCount() != 0) {
             while (resultSet.moveToNext()) {
                 handleNames.add(resultSet.getString(0));
+                handleImages.add(resultSet.getString(1));
             }
         } else {
             toastMessage("No data found");
