@@ -6,7 +6,7 @@ Codeforces Progress is an android application that tracks the progress of a user
 
 
 
-**uniqueness about this application:**
+**Uniqueness about this application:**
 
 - It has a scoring system. This scoring system is based on regular practicing. One can get motivated by seeing their score and keep pushing themselves to do harder problems to gain more score. Challenging fact is that if someone do less difficulty level problem and/or doesn't solve problems on codeforces frequently then his score will decrease. 
 
