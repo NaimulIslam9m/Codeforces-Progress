@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="?attr/selectableItemBackground">
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/problemNameId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Problem Name"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
         android:layout_marginLeft="10dp"
-        android:layout_marginBottom="5dp"
         android:layout_marginTop="8dp"
-        />
+        android:layout_marginBottom="5dp"
+        android:text="Problem Name"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/problemRatingId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rating"
         android:layout_marginLeft="10dp"
-        android:textColor="#0e9aa7"
-        />
+        android:text="Rating"
+        android:textColor="@color/colorBlueGreen" />
 
     <TextView
         android:id="@+id/problemTagId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tags"
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="8dp"
-        android:textColor="#03396c"
-        />
+        android:text="Tags"
+        android:textColor="@color/colorPrussianBlue" />
 </LinearLayout>

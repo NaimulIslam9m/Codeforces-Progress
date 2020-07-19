@@ -6,7 +6,6 @@
     android:gravity="center"
     android:background="?attr/selectableItemBackground">
 
-    <!--Image View-->
     <androidx.cardview.widget.CardView
         android:layout_width="50dp"
         android:layout_height="50dp"

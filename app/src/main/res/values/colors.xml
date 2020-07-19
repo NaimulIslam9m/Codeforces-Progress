@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorBlueGreen">#0e9aa7</color>
+    <color name="colorPrussianBlue">#03396c</color>
+
     <color name="lvl_800">#85837e</color>
     <color name="lvl_900">#779974</color>
     <color name="lvl_1000">#72ab6d</color>

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.CF_Progress"
+        applicationId "com.example.Codeforces_Progress"
         minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
@@ -32,28 +32,29 @@ dependencies {
 
 }
 
-// floating action button
+// Adding Floating Action Button library
 dependencies {
     implementation 'com.getbase:floatingactionbutton:1.10.1'
 }
 
-// cardview
+// Adding Cardview library
 dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 }
 
-//
+// Adding Material Components for Android Library
+// used for toolbar and tab layout
 dependencies {
     implementation 'com.google.android.material:material:1.1.0'
 }
 
-// retrofit
+// Adding Retrofit HTTP client
 dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 }
 
-// MPAndroidChart
+// Adding MPAndroidChart library
 repositories {
     maven { url 'https://jitpack.io' }
 }
@@ -61,17 +62,17 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
 
-// imageView
+// Adding Picasso library
 dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
 }
 
-// Swipe Refresh Laout
+// Adding SwipeRefreshLaout
 dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }
 
-// recyclerview
+// Adding RecyclerView
 dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 }

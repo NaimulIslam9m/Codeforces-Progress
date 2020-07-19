@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--progress bar-->
         <LinearLayout
             android:id="@+id/LLProgressBarId"
             android:layout_width="fill_parent"
@@ -38,7 +37,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <!--Image View-->
                 <androidx.cardview.widget.CardView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
@@ -191,7 +189,6 @@
                 android:background="#c0c0c0"
                 android:paddingTop="0dp" />
 
-            <!--user details-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

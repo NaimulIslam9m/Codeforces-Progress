@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "sub1"
+rootProject.name = "Codeforces Progress"
