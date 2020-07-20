@@ -37,4 +37,4 @@ else
 <br><a href="https://ibb.co/wJKWB0D"><img src="https://i.ibb.co/pW3zb0C/Annotation-2020-07-19-195506.png" alt="Annotation-2020-07-19-195506" border="0"></a><br>
 Here x-axis represents the difficulty level of a problem and y-axis represents the penalty.
 
-Before 2500 penalty will be counted from positive green graph and after 2500(included) penalty will be counted from red graph.
+Before 2500 penalty will be counted from positive **green** graph and after 2500(included) penalty will be counted from **red** graph.
