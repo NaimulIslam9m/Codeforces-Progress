@@ -1,4 +1,4 @@
-<img src="https://i.ibb.co/whKHFNf/ic-launcher.png" alt="ic-launcher" border="0">
+![ic-launcher](https://i.ibb.co/whKHFNf/ic-launcher.png)
 
 
 
