@@ -1,15 +1,6 @@
 ![ic-launcher](https://i.ibb.co/whKHFNf/ic-launcher.png)
 
-
-
 Codeforces Progress is an android application that tracks the progress of a user in codeforces.
-
-
-
-https://github.com/NaimulIslam9m/Codeforces-Progress/assets/52814980/ca43a8c7-2415-4bf3-9975-31f1c6c30f0b
-
-
-
 
 **Uniqueness of this application:**
 
@@ -43,3 +34,6 @@ else
 Here x-axis represents the difficulty level of a problem and y-axis represents the penalty.
 
 Before 2500 penalty will be counted from positive **green** graph and after 2500(included) penalty will be counted from **red** graph.
+
+# Live Preview
+https://github.com/NaimulIslam9m/Codeforces-Progress/assets/52814980/ca43a8c7-2415-4bf3-9975-31f1c6c30f0b
